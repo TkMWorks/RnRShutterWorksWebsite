@@ -1,0 +1,6 @@
+aws s3api put-object --bucket dev-rnrshutterworks-image-lz --key 01.jpg --body 01.jpg --tagging "Caption=End of Day"
+aws s3api put-object --bucket dev-rnrshutterworks-image-lz --key 02.jpg --body 02.jpg --tagging "Caption=iStream"
+aws s3api put-object --bucket dev-rnrshutterworks-image-lz --key 03.jpg --body 03.jpg --tagging "Caption=Tranquility"
+aws s3api put-object --bucket dev-rnrshutterworks-image-lz --key 04.jpg --body 04.jpg --tagging "Caption=Torrentz"
+aws s3api put-object --bucket dev-rnrshutterworks-image-lz --key 05.jpg --body 05.jpg --tagging "Caption=Go with the Flow"
+aws s3api put-object --bucket dev-rnrshutterworks-image-lz --key 06.jpg --body 06.jpg --tagging "Caption=Way through the Woods"

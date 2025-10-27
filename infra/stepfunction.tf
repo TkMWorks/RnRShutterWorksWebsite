@@ -1,0 +1,29 @@
+resource "aws_iam_role" "stepfunction_iam_role" {
+  name                 = "${var.environment}-${var.project_code}-stepfunction-iam-role"
+  assume_role_policy   = data.aws_iam_policy_document.stepfunction_assume_role_policy.json
+  description          = "IAM Role for ${var.project_name} Step Function"
+  max_session_duration = 3600
+  tags = merge(local.common_tags, {
+    Name = "${var.project_name} Step Function IAM Role"
+  })
+}
+
+resource "aws_iam_role_policy" "stepfunction_iam_role_policy" {
+  name   = "${var.environment}-${var.project_code}-stepfunction-iam-policy"
+  policy = data.aws_iam_policy_document.stepfunction_role_policy.json
+  role   = aws_iam_role.stepfunction_iam_role.name
+}
+
+resource "aws_sfn_state_machine" "stepfunction" {
+  name     = "${var.environment}-${var.project_code}-stepfunction"
+  role_arn = aws_iam_role.stepfunction_iam_role.arn
+  type     = "EXPRESS"
+  definition = templatefile("${path.module}/stepfn.json", {
+    HTMLGeneratorLambdaARN = "${aws_lambda_function.html_generator_lambda.invoke_arn}"
+  })
+  
+  tags = merge(local.common_tags, {
+    Description = "StepFunction For HTML Generator"
+  })
+  depends_on = [aws_lambda_function.html_generator_lambda]
+}
