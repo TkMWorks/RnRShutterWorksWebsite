@@ -14,16 +14,33 @@ resource "aws_iam_role_policy" "stepfunction_iam_role_policy" {
   role   = aws_iam_role.stepfunction_iam_role.name
 }
 
+resource "aws_cloudwatch_log_group" "stepfunction_cloudwatch_log_group" {
+  name              = "${var.environment}-${var.project_code}-stepfunction-Logs"
+  skip_destroy      = false
+  retention_in_days = 90
+  tags = merge(local.common_tags, {
+    Name        = "${var.environment}-${var.project_code}-stepfunction-Logs"
+    Description = "CloudWatch Log Group for ${var.project_name} Step Function"
+  })
+}
+
 resource "aws_sfn_state_machine" "stepfunction" {
   name     = "${var.environment}-${var.project_code}-stepfunction"
   role_arn = aws_iam_role.stepfunction_iam_role.arn
   type     = "EXPRESS"
   definition = templatefile("${path.module}/stepfn.json", {
-    HTMLGeneratorLambdaARN = "${aws_lambda_function.html_generator_lambda.invoke_arn}"
+    HTMLGeneratorLambdaARN = "${aws_lambda_function.html_generator_lambda.arn}"
   })
-  
+  logging_configuration {
+    log_destination        = "${aws_cloudwatch_log_group.stepfunction_cloudwatch_log_group.arn}:*"
+    include_execution_data = true
+    level                  = "ALL"
+  }
   tags = merge(local.common_tags, {
     Description = "StepFunction For HTML Generator"
   })
-  depends_on = [aws_lambda_function.html_generator_lambda]
+  depends_on = [
+    aws_lambda_function.html_generator_lambda,
+    aws_cloudwatch_log_group.stepfunction_cloudwatch_log_group
+  ]
 }
