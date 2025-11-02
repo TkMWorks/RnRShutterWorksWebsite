@@ -39,3 +39,11 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+/src/ImageUploadUtility/UploadUtility/.vs/ProjectEvaluation
+/src/ImageUploadUtility/UploadUtility/.vs/UploadUtility/CopilotIndices/18.0.912.14514
+/src/ImageUploadUtility/UploadUtility/.vs/UploadUtility.slnx/DesignTimeBuild/.dtbcache.v2
+/src/ImageUploadUtility/UploadUtility/.vs/UploadUtility.slnx/FileContentIndex
+/src/ImageUploadUtility/UploadUtility/.vs/UploadUtility.slnx/v18
+/src/ImageUploadUtility/UploadUtility/bin/Debug/net10.0-windows
+/src/ImageUploadUtility/UploadUtility/obj
+/src/ImageUploadUtility/UploadUtility/.editorconfig
