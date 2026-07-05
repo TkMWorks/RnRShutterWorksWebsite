@@ -23,5 +23,5 @@ locals {
     Project      = "${var.project_name}"
   }
 
-  project_code = lower(var.project_name)
+  project_code = lower(replace(var.project_name, " ", ""))
 }
