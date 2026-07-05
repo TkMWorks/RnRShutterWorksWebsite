@@ -1,16 +1,16 @@
 resource "aws_sqs_queue" "image_processing_queue_dlq" {
-  name                       = "${var.environment}-${var.project_code}-image-processing-queue-dlq"
+  name                       = "${var.environment}-${local.project_code}-image-processing-queue-dlq"
   visibility_timeout_seconds = 30
   message_retention_seconds  = 1209600
   delay_seconds              = 0
   tags = merge(local.common_tags, {
-    Name        = "${var.environment}-${var.project_code}-image-processing-queue-dlq"
+    Name        = "${var.environment}-${local.project_code}-image-processing-queue-dlq"
     Description = "${var.project_name} Image Processing DLQ"
   })
 }
 
 resource "aws_sqs_queue" "image_processing_queue" {
-  name                       = "${var.environment}-${var.project_code}-image-processing-queue"
+  name                       = "${var.environment}-${local.project_code}-image-processing-queue"
   visibility_timeout_seconds = 30
   message_retention_seconds  = 86400
   delay_seconds              = 0
@@ -19,7 +19,7 @@ resource "aws_sqs_queue" "image_processing_queue" {
     maxReceiveCount     = 5
   })
   tags = merge(local.common_tags, {
-    Name        = "${var.environment}-${var.project_code}-image-processing-queue"
+    Name        = "${var.environment}-${local.project_code}-image-processing-queue"
     Description = "${var.project_name} Image Processing SQS Queue"
   })
 }

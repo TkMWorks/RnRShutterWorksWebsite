@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "image_upload_sns_topic_policy" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values   = ["arn:aws:s3:::${var.environment}-${var.project_code}-image-lz"]
+      values   = ["arn:aws:s3:::${var.environment}-${local.project_code}-image-lz"]
     }
   }
   statement {
@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "alert_sns_topic_policy" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values   = ["arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery"]
+      values   = ["arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery"]
     }
   }
   statement {
@@ -69,8 +69,8 @@ data "aws_iam_policy_document" "alert_sns_topic_policy" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        "arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${var.project_code}-html-generator",
-        "arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${var.project_code}-image-copier"
+        "arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${local.project_code}-html-generator",
+        "arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${local.project_code}-image-copier"
       ]
     }
   }
@@ -104,7 +104,7 @@ data "aws_iam_policy_document" "gallery_s3_bucket_policy" {
       identifiers = ["cloudfront.amazonaws.com"]
     }
     actions   = ["s3:GetObject"]
-    resources = ["arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery/*"]
+    resources = ["arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery/*"]
   }
   statement {
     sid    = "AllowLambdaReadWrite"
@@ -125,15 +125,15 @@ data "aws_iam_policy_document" "gallery_s3_bucket_policy" {
       "s3:PutObjectTagging"
     ]
     resources = [
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery",
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery/*"
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery",
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery/*"
     ]
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        "arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${var.project_code}-html-generator",
-        "arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${var.project_code}-image-copier"
+        "arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${local.project_code}-html-generator",
+        "arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${local.project_code}-image-copier"
       ]
     }
   }
@@ -145,7 +145,7 @@ data "aws_iam_policy_document" "gallery_s3_bucket_policy" {
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
     actions   = ["s3:*"]
-    resources = ["arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery/*"]
+    resources = ["arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery/*"]
   }
 }
 
@@ -159,7 +159,7 @@ data "aws_iam_policy_document" "image_processing_sqs_queue_policy" {
       identifiers = ["sns.amazonaws.com"]
     }
     actions   = ["sqs:SendMessage"]
-    resources = ["arn:aws:sqs:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:${var.environment}-${var.project_code}-image-processing-queue"]
+    resources = ["arn:aws:sqs:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:${var.environment}-${local.project_code}-image-processing-queue"]
     condition {
       test     = "ArnEquals"
       variable = "aws:SourceArn"
@@ -183,7 +183,7 @@ data "aws_iam_policy_document" "image_processing_sqs_queue_policy" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values   = ["arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${var.project_code}-image-copier"]
+      values   = ["arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${local.project_code}-image-copier"]
     }
   }
   statement {
@@ -239,10 +239,10 @@ data "aws_iam_policy_document" "html_processor_lambda_role_policy" {
       "s3:PutObjectTagging"
     ]
     resources = [
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery",
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery/*",
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery/Images/*",
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery/Images"
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery",
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery/*",
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery/Images/*",
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery/Images"
     ]
   }
   statement {
@@ -264,7 +264,7 @@ data "aws_iam_policy_document" "image_copier_lambda_role_policy" {
       "sqs:GetQueueAttributes",
       "sqs:GetQueueUrl"
     ]
-    resources = ["arn:aws:sqs:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:${var.environment}-${var.project_code}-image-processing-queue"]
+    resources = ["arn:aws:sqs:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:${var.environment}-${local.project_code}-image-processing-queue"]
   }
   statement {
     sid    = "AllowLambdaToAccessS3Bucket"
@@ -280,10 +280,10 @@ data "aws_iam_policy_document" "image_copier_lambda_role_policy" {
       "s3:PutObjectTagging"
     ]
     resources = [
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-lz",
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-lz/*",
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery",
-      "arn:aws:s3:::${var.environment}-${var.project_code}-image-gallery/*"
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-lz",
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-lz/*",
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery",
+      "arn:aws:s3:::${var.environment}-${local.project_code}-image-gallery/*"
     ]
   }
   statement {
@@ -296,7 +296,7 @@ data "aws_iam_policy_document" "image_copier_lambda_role_policy" {
     sid       = "AllowLambdaToInvokeStepFunction"
     effect    = "Allow"
     actions   = ["states:StartExecution"]
-    resources = ["arn:aws:states:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:stateMachine:${var.environment}-${var.project_code}-stepfunction"]
+    resources = ["arn:aws:states:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:stateMachine:${var.environment}-${local.project_code}-stepfunction"]
   }
 }
 
@@ -346,6 +346,13 @@ data "aws_iam_policy_document" "stepfunction_role_policy" {
     actions = [
       "lambda:InvokeFunction"
     ]
-    resources = ["arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${var.project_code}-html-generator"]
+    resources = ["arn:aws:lambda:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:function:${var.environment}-${local.project_code}-html-generator"]
   }
+}
+
+data "aws_acm_certificate" "custom_domain_ssl_certificate" {
+  domain      = "*.${var.custom_domain_name}"
+  statuses    = ["ISSUED"]
+  types       = ["AMAZON_ISSUED"]
+  most_recent = true
 }

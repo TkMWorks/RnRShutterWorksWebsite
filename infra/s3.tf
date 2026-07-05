@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "image_landing_zone" {
-  bucket        = "${var.environment}-${var.project_code}-image-lz"
+  bucket        = "${var.environment}-${local.project_code}-image-lz"
   region        = var.aws_region
   force_destroy = true
 
@@ -34,7 +34,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "image_lz_lifecycle" {
 }
 
 resource "aws_s3_bucket" "image_gallery" {
-  bucket        = "${var.environment}-${var.project_code}-image-gallery"
+  bucket        = "${var.environment}-${local.project_code}-image-gallery"
   region        = var.aws_region
   force_destroy = true
 
@@ -81,7 +81,7 @@ resource "aws_s3_object" "background_image" {
   source        = "../src/website/backgroundimage.jpg"
   force_destroy = true
   etag          = filemd5("../src/website/backgroundimage.jpg")
-  content_type  = "image/jpeg"
+  content_type  = "local.project_code"
   tags = merge(local.common_tags, {
     Name = "${var.project_name} Website Background Image"
   })
@@ -93,7 +93,7 @@ resource "aws_s3_object" "favicon" {
   source        = "../src/website/favicon.png"
   force_destroy = true
   etag          = filemd5("../src/website/favicon.png")
-  content_type  = "image/jpeg"
+  content_type  = "local.project_code"
   tags = merge(local.common_tags, {
     Name = "${var.project_name} Website Favourite Icon"
   })

@@ -1,8 +1,8 @@
 resource "aws_sns_topic" "image_upload_topic" {
-  name         = "${var.environment}-${var.project_code}-image-upload-topic"
+  name         = "${var.environment}-${local.project_code}-image-upload-topic"
   display_name = "Image Upload SNS Topic for ${var.project_name}"
   tags = merge(local.common_tags, {
-    Name        = "${var.environment}-${var.project_code}-image-upload-topic"
+    Name        = "${var.environment}-${local.project_code}-image-upload-topic"
     Description = "Image Upload SNS Topic for ${var.project_name}"
   })
 }
@@ -13,10 +13,10 @@ resource "aws_sns_topic_policy" "image_upload_topic_policy" {
 }
 
 resource "aws_sns_topic" "alert_topic" {
-  name         = "${var.environment}-${var.project_code}-alert-topic"
+  name         = "${var.environment}-${local.project_code}-alert-topic"
   display_name = "Alert SNS Topic for ${var.project_name}"
   tags = merge(local.common_tags, {
-    Name        = "${var.environment}-${var.project_code}-alert-topic"
+    Name        = "${var.environment}-${local.project_code}-alert-topic"
     Description = "Alert SNS Topic for ${var.project_name}"
   })
 }

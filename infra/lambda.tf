@@ -5,7 +5,7 @@ resource "archive_file" "lambda_zip" {
 }
 
 resource "aws_iam_role" "html_generator_lambda_iam_role" {
-  name                 = "${var.environment}-${var.project_code}-htmlgen-lambda-iam-role"
+  name                 = "${var.environment}-${local.project_code}-htmlgen-lambda-iam-role"
   assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
   description          = "IAM Role for ${var.project_name} HTML Generator Lambda"
   max_session_duration = 3600
@@ -19,13 +19,13 @@ resource "aws_iam_role" "html_generator_lambda_iam_role" {
 }
 
 resource "aws_iam_role_policy" "html_generator_lambda_iam_role_policy" {
-  name   = "${var.environment}-${var.project_code}-htmlgen-lambda-iam-policy"
+  name   = "${var.environment}-${local.project_code}-htmlgen-lambda-iam-policy"
   policy = data.aws_iam_policy_document.html_processor_lambda_role_policy.json
   role   = aws_iam_role.html_generator_lambda_iam_role.name
 }
 
 resource "aws_iam_role" "image_copier_lambda_iam_role" {
-  name                 = "${var.environment}-${var.project_code}-imagecopy-lambda-iam-role"
+  name                 = "${var.environment}-${local.project_code}-imagecopy-lambda-iam-role"
   assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
   description          = "IAM Role for ${var.project_name} Image Copier Lambda"
   max_session_duration = 3600
@@ -36,7 +36,7 @@ resource "aws_iam_role" "image_copier_lambda_iam_role" {
 }
 
 resource "aws_iam_role_policy" "image_copier_lambda_iam_role_policy" {
-  name   = "${var.environment}-${var.project_code}-imagecopy-lambda-iam-policy"
+  name   = "${var.environment}-${local.project_code}-imagecopy-lambda-iam-policy"
   policy = data.aws_iam_policy_document.image_copier_lambda_role_policy.json
   role   = aws_iam_role.image_copier_lambda_iam_role.name
 }
@@ -57,7 +57,7 @@ resource "aws_iam_role_policy_attachment" "image_copier_iam_role_sqs_policy_atta
 }
 
 resource "aws_lambda_function" "image_copier_lambda" {
-  function_name = "${var.environment}-${var.project_code}-image-copier"
+  function_name = "${var.environment}-${local.project_code}-image-copier"
   role          = aws_iam_role.image_copier_lambda_iam_role.arn
   architectures = ["x86_64"]
   description   = "${var.project_name} Image Copier Lambda"
@@ -71,13 +71,13 @@ resource "aws_lambda_function" "image_copier_lambda" {
   source_code_hash = archive_file.lambda_zip.output_base64sha256
   timeout          = 30
   tags = merge(local.common_tags, {
-    Name        = "${var.environment}-${var.project_code}-image-copier"
+    Name        = "${var.environment}-${local.project_code}-image-copier"
     Description = "Lambda Function to Copy Images to Gallery"
   })
 }
 
 resource "aws_lambda_function" "html_generator_lambda" {
-  function_name = "${var.environment}-${var.project_code}-html-generator"
+  function_name = "${var.environment}-${local.project_code}-html-generator"
   role          = aws_iam_role.html_generator_lambda_iam_role.arn
   architectures = ["x86_64"]
   description   = "${var.project_name} HTML Generator Lambda"
@@ -91,7 +91,7 @@ resource "aws_lambda_function" "html_generator_lambda" {
   source_code_hash = archive_file.lambda_zip.output_base64sha256
   timeout          = 30
   tags = merge(local.common_tags, {
-    Name        = "${var.environment}-${var.project_code}-html-generator"
+    Name        = "${var.environment}-${local.project_code}-html-generator"
     Description = "Lambda Function to Generate Gallery HTML"
   })
 }
@@ -103,7 +103,7 @@ resource "aws_lambda_event_source_mapping" "image_copier_lambda_sqs_trigger" {
   maximum_batching_window_in_seconds = 120
   enabled                            = true
   tags = merge(local.common_tags, {
-    Name        = "${var.environment}-${var.project_code}-image-copier-sqs-trigger"
+    Name        = "${var.environment}-${local.project_code}-image-copier-sqs-trigger"
     Description = "SQS Trigger for Image Copier Lambda"
   })
   depends_on = [
