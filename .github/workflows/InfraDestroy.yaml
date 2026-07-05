@@ -26,8 +26,14 @@ jobs:
           role-session-name: GitHubTerraformSession
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4.0.1
-      - name: Terraform Init and Destroy
-        run: |
-          cd ./infra
-          terraform init
-          terraform destroy
+      - name: Terraform Init
+        working-directory: ./infra
+        run: terraform init
+      - name: Terraform Plan (Destroy)
+        working-directory: ./infra
+        if: ${{ inputs.confirm == 'Yes' }}
+        run: terraform plan -destroy -out=${{ vars.PROJECT_NAME }}Destroy.tfplan
+      - name: Terraform Destroy
+        working-directory: ./infra
+        if: ${{ inputs.confirm == 'Yes' }}
+        run: terraform destroy ${{ vars.PROJECT_NAME }}Destroy.tfplan
