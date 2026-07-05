@@ -36,4 +36,4 @@ jobs:
       - name: Terraform Destroy
         working-directory: ./infra
         if: ${{ inputs.confirm == 'Yes' }}
-        run: terraform destroy ${{ vars.PROJECT_NAME }}Destroy.tfplan
+        run: terraform destroy -auto-approve
