@@ -30,7 +30,7 @@ jobs:
         working-directory: ./infra
         run: |
           terraform init
-          terraform plan -vars-file ${{ inputs.environment }}.json -out ${{ vars.PROJECT_NAME }}.tfplan
+          terraform plan -var-file ${{ inputs.environment }}.json -out ${{ vars.PROJECT_NAME }}.tfplan
       - name: Upload Terraform Plan
         uses: actions/upload-artifact@v7
         with:

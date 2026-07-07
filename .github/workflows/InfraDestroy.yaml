@@ -39,7 +39,7 @@ jobs:
       - name: Terraform Plan (Destroy)
         working-directory: ./infra
         if: ${{ inputs.confirm == 'Yes' }}
-        run: terraform plan -destroy -vars-file ${{ inputs.environment }}.json -out=${{ vars.PROJECT_NAME }}Destroy.tfplan
+        run: terraform plan -destroy -var-file ${{ inputs.environment }}.json -out=${{ vars.PROJECT_NAME }}Destroy.tfplan
       - name: Terraform Destroy
         working-directory: ./infra
         if: ${{ inputs.confirm == 'Yes' }}
