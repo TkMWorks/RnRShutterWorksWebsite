@@ -88,7 +88,7 @@ resource "aws_s3_object" "background_image" {
 }
 
 resource "aws_s3_object" "favicon" {
-  key           = "favicon.png"
+  key           = "${local.project_code}/favicon.png"
   bucket        = aws_s3_bucket.image_gallery.id
   source        = "../src/website/favicon.png"
   force_destroy = true
@@ -100,7 +100,7 @@ resource "aws_s3_object" "favicon" {
 }
 
 resource "aws_s3_object" "website_logo" {
-  key           = "R&RShutterWorks_Logo.svg"
+  key           = "${local.project_code}/R&RShutterWorks_Logo.svg"
   bucket        = aws_s3_bucket.image_gallery.id
   source        = "../src/website/R&RShutterWorks_Logo.svg"
   force_destroy = true
@@ -112,7 +112,7 @@ resource "aws_s3_object" "website_logo" {
 }
 
 resource "aws_s3_object" "javascript_file" {
-  key           = "script.js"
+  key           = "${local.project_code}/script.js"
   bucket        = aws_s3_bucket.image_gallery.id
   source        = "../src/website/script.js"
   force_destroy = true
@@ -124,7 +124,7 @@ resource "aws_s3_object" "javascript_file" {
 }
 
 resource "aws_s3_object" "css_stylesheet" {
-  key           = "styles.css"
+  key           = "${local.project_code}/styles.css"
   bucket        = aws_s3_bucket.image_gallery.id
   source        = "../src/website/styles.css"
   force_destroy = true
