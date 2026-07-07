@@ -53,7 +53,8 @@ def generate_html():
     if not list_of_image_parameters:
         print("No images found in the bucket.")
     for item in list_of_image_parameters:
-        final_string += f'<div class="box" style="background-image: url(\'./{item["image_path"]}\');" onclick="showModalPopup(\'./{item["image_path"]}\', \'{item["caption"]}\')"></div>\n\t\t'
+        normalized_path = item["image_path"].replace("f{TARGET_PREFIX}/","")
+        final_string += f'<div class="box" style="background-image: url(\'./{normalized_path}\');" onclick="showModalPopup(\'./{normalized_path}\', \'{item["caption"]}\')"></div>\n\t\t'
     final_string = final_string.strip()
     print(final_string)
     output_file = open(f"/tmp/{OUTPUT_FILE_NAME}", "w", encoding="utf-8")
