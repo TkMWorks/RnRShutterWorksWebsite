@@ -13,7 +13,6 @@ resource "aws_iam_role" "html_generator_lambda_iam_role" {
     Name = "${var.project_name} HTML Generator Lambda IAM Role"
   })
   depends_on = [
-    aws_cloudfront_distribution.image_gallery_distribution,
     aws_sns_topic.alert_topic
   ]
 }

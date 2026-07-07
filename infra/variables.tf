@@ -27,9 +27,3 @@ variable "project_owner" {
   description = "Project Owner"
   default     = "TkM"
 }
-
-variable "custom_domain_name" {
-  type        = string
-  description = "Custom Domain Name for hosting"
-  default     = "tkmworks.co.in"
-}

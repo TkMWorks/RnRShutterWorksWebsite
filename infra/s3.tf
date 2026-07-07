@@ -54,21 +54,21 @@ resource "aws_s3_bucket_notification" "gallery_s3_image_upload_sns_notification"
   topic {
     topic_arn     = aws_sns_topic.alert_topic.arn
     events        = ["s3:ObjectCreated:*"]
-    filter_prefix = "Images/"
+    filter_prefix = "${local.project_code}/Images/"
     filter_suffix = ".jpg"
   }
 
   topic {
     topic_arn     = aws_sns_topic.alert_topic.arn
     events        = ["s3:ObjectCreated:*"]
-    filter_prefix = "Images/"
+    filter_prefix = "${local.project_code}/Images/"
     filter_suffix = ".jpeg"
   }
 
   topic {
     topic_arn     = aws_sns_topic.alert_topic.arn
     events        = ["s3:ObjectCreated:*"]
-    filter_prefix = ""
+    filter_prefix = "${local.project_code}/"
     filter_suffix = ".html"
   }
 
@@ -76,12 +76,12 @@ resource "aws_s3_bucket_notification" "gallery_s3_image_upload_sns_notification"
 }
 
 resource "aws_s3_object" "background_image" {
-  key           = "backgroundimage.jpg"
+  key           = "${local.project_code}/backgroundimage.jpg"
   bucket        = aws_s3_bucket.image_gallery.id
   source        = "../src/website/backgroundimage.jpg"
   force_destroy = true
   etag          = filemd5("../src/website/backgroundimage.jpg")
-  content_type  = "local.project_code"
+  content_type  = "image/jpeg"
   tags = merge(local.common_tags, {
     Name = "${var.project_name} Website Background Image"
   })
@@ -93,7 +93,7 @@ resource "aws_s3_object" "favicon" {
   source        = "../src/website/favicon.png"
   force_destroy = true
   etag          = filemd5("../src/website/favicon.png")
-  content_type  = "local.project_code"
+  content_type  = "image/png"
   tags = merge(local.common_tags, {
     Name = "${var.project_name} Website Favourite Icon"
   })
@@ -117,7 +117,7 @@ resource "aws_s3_object" "javascript_file" {
   source        = "../src/website/script.js"
   force_destroy = true
   etag          = filemd5("../src/website/script.js")
-  content_type  = "application/javascript"
+  content_type  = "text/javascript"
   tags = merge(local.common_tags, {
     Name = "${var.project_name} Javascript File"
   })

@@ -11,6 +11,7 @@ TARGET_BUCKET = None
 OUTPUT_IMAGE_FOLDER_NAME = None
 ALERT_SNS_TOPIC_ARN = None
 STEPFUNCTION_ARN = None
+TARGET_PREFIX = None
 s3_client = None
 sqs_client = None
 sns_client = None
@@ -19,10 +20,11 @@ sqs_messages_to_delete = []
 
 
 def init():
-    global SQS_URL, TARGET_BUCKET, OUTPUT_IMAGE_FOLDER_NAME, ALERT_SNS_TOPIC_ARN, STEPFUNCTION_ARN, s3_client, sqs_client, sns_client, sfn_client, sqs_messages_to_delete
+    global SQS_URL, TARGET_BUCKET, OUTPUT_IMAGE_FOLDER_NAME, ALERT_SNS_TOPIC_ARN, STEPFUNCTION_ARN, TARGET_PREFIX, s3_client, sqs_client, sns_client, sfn_client, sqs_messages_to_delete
     try:
         SQS_URL = os.environ.get("SQS_URL")
         TARGET_BUCKET = os.environ.get("TARGET_BUCKET")
+        TARGET_PREFIX = os.environ.get("TARGET_PREFIX")
         OUTPUT_IMAGE_FOLDER_NAME = os.environ.get("OUTPUT_IMAGE_FOLDER_NAME")
         ALERT_SNS_TOPIC_ARN = os.environ.get("ALERT_SNS_TOPIC_ARN")
         STEPFUNCTION_ARN = os.environ.get("STEPFUNCTION_ARN")
@@ -55,7 +57,7 @@ def process_sqs_messages(event):
 
 
 def copy_images_to_s3(source_bucket, source_image_key):
-    destination_key = f"{OUTPUT_IMAGE_FOLDER_NAME}/{source_image_key}"
+    destination_key = f"{TARGET_PREFIX}/{OUTPUT_IMAGE_FOLDER_NAME}/{source_image_key}"
     try:
         s3_client.copy_object(Bucket=TARGET_BUCKET, CopySource={'Bucket': source_bucket, 'Key': source_image_key}, Key=destination_key, TaggingDirective='COPY', MetadataDirective='REPLACE', ContentType='image/jpeg')
         print(f"Image {source_image_key} copied to S3 bucket {TARGET_BUCKET} successfully.")

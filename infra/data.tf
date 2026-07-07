@@ -222,7 +222,7 @@ data "aws_iam_policy_document" "html_processor_lambda_role_policy" {
       "cloudfront:GetDistribution",
       "cloudfront:ListDistributions"
     ]
-    resources = [aws_cloudfront_distribution.image_gallery_distribution.arn]
+    resources = [data.aws_cloudfront_distribution.tkmworks_central_cf_distribution.arn]
   }
   statement {
     sid    = "AllowLambdaAccessToS3"
@@ -350,9 +350,10 @@ data "aws_iam_policy_document" "stepfunction_role_policy" {
   }
 }
 
-data "aws_acm_certificate" "custom_domain_ssl_certificate" {
-  domain      = "*.${var.custom_domain_name}"
-  statuses    = ["ISSUED"]
-  types       = ["AMAZON_ISSUED"]
-  most_recent = true
+data "aws_ssm_parameter" "cloudfront_id" {
+  name = "/tkmworks/websites/cloudfront/id"
+}
+
+data "aws_cloudfront_distribution" "tkmworks_central_cf_distribution" {
+  id = data.aws_ssm_parameter.cloudfront_id.value
 }

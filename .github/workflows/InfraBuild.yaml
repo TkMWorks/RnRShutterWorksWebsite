@@ -1,10 +1,14 @@
 name: InfraBuild
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - .github/workflows/*
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to deploy'
+        required: true
+        type: choice
+        options:
+          - "dev"
+          - "prod"
 permissions:
   id-token: write
   contents: read
@@ -23,10 +27,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4.0.1
       - name: Terraform Initialize & Plan
+        working-directory: ./infra
         run: |
-          cd ./infra
           terraform init
-          terraform plan -out ${{ vars.PROJECT_NAME }}.tfplan
+          terraform plan -vars-file ${{ inputs.environment }}.json -out ${{ vars.PROJECT_NAME }}.tfplan
       - name: Upload Terraform Plan
         uses: actions/upload-artifact@v7
         with:
@@ -54,7 +58,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4.0.1
       - name: Terraform Apply
+        working-directory: ./infra
         run: |
-          cd ./infra
           terraform init
           terraform apply ${{ vars.PROJECT_NAME }}.tfplan

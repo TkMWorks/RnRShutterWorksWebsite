@@ -3,7 +3,8 @@ locals {
     "TEMPLATE_FILE_NAME" : "index_template.txt"
     "OUTPUT_FILE_NAME" : "index.html"
     "GALLERY_IMAGE_FOLDER_NAME" : "Images"
-    "CLOUDFRONT_ID" : "${aws_cloudfront_distribution.image_gallery_distribution.id}"
+    "TARGET_PREFIX" : "${local.project_code}"
+    "CLOUDFRONT_ID" : "${data.aws_ssm_parameter.cloudfront_id.value}"
     "GALLERY_BUCKET" : "${var.environment}-${local.project_code}-image-gallery"
     "ALERT_SNS_TOPIC_ARN" : "${aws_sns_topic.alert_topic.arn}"
   }
@@ -11,6 +12,7 @@ locals {
   image_copier_lambda_env_vars = {
     "SQS_URL" : "https://sqs.${data.aws_region.current_region.region}.amazonaws.com/${data.aws_caller_identity.current.account_id}/${var.environment}-${local.project_code}-image-processing-queue"
     "TARGET_BUCKET" : "${var.environment}-${local.project_code}-image-gallery"
+    "TARGET_PREFIX" : "${local.project_code}"
     "OUTPUT_IMAGE_FOLDER_NAME" : "Images"
     "ALERT_SNS_TOPIC_ARN" : "${aws_sns_topic.alert_topic.arn}"
     "STEPFUNCTION_ARN" : "arn:aws:states:${data.aws_region.current_region.region}:${data.aws_caller_identity.current.account_id}:stateMachine:${var.environment}-${local.project_code}-stepfunction"

@@ -9,6 +9,13 @@ on:
         options:
           - "No"
           - "Yes"
+      environment:
+        description: 'Select the environment to destroy'
+        required: true
+        type: choice
+        options:
+          - "dev"
+          - "prod"
 permissions:
   id-token: write
   contents: read
@@ -32,7 +39,7 @@ jobs:
       - name: Terraform Plan (Destroy)
         working-directory: ./infra
         if: ${{ inputs.confirm == 'Yes' }}
-        run: terraform plan -destroy -out=${{ vars.PROJECT_NAME }}Destroy.tfplan
+        run: terraform plan -destroy -vars-file ${{ inputs.environment }}.json -out=${{ vars.PROJECT_NAME }}Destroy.tfplan
       - name: Terraform Destroy
         working-directory: ./infra
         if: ${{ inputs.confirm == 'Yes' }}

@@ -12,6 +12,7 @@ logger = logging.getLogger()
 
 TEMPLATE_FILE_NAME = None
 OUTPUT_FILE_NAME = None
+TARGET_PREFIX = None
 TEMPLATE_CONTENT = None
 GALLERY_IMAGE_FOLDER_NAME = None
 CLOUDFRONT_ID = None
@@ -23,10 +24,11 @@ sns_client = None
 list_of_image_parameters = []
 
 def init():
-    global TEMPLATE_FILE_NAME, OUTPUT_FILE_NAME, TEMPLATE_CONTENT, GALLERY_BUCKET, ALERT_SNS_TOPIC_ARN, GALLERY_IMAGE_FOLDER_NAME, CLOUDFRONT_ID, s3_client, cloudfront_client, sns_client, list_of_image_parameters
+    global TEMPLATE_FILE_NAME, OUTPUT_FILE_NAME, TARGET_PREFIX, TEMPLATE_CONTENT, GALLERY_BUCKET, ALERT_SNS_TOPIC_ARN, GALLERY_IMAGE_FOLDER_NAME, CLOUDFRONT_ID, s3_client, cloudfront_client, sns_client, list_of_image_parameters
 
     TEMPLATE_FILE_NAME = os.environ.get("TEMPLATE_FILE_NAME", "index_template.txt")
     OUTPUT_FILE_NAME = os.environ.get("OUTPUT_FILE_NAME", "index.html")
+    TARGET_PREFIX = os.environ.get("TARGET_PREFIX")
     GALLERY_IMAGE_FOLDER_NAME = os.environ.get("GALLERY_IMAGE_FOLDER_NAME", "Images")
     CLOUDFRONT_ID = os.environ.get("CLOUDFRONT_ID")
     GALLERY_BUCKET = os.environ.get("GALLERY_BUCKET")
@@ -62,13 +64,13 @@ def generate_html():
 
 def copy_html_to_s3():
     with open(f"/tmp/{OUTPUT_FILE_NAME}", "rb") as file_data:
-        s3_client.put_object(Bucket=GALLERY_BUCKET, Key=f"{OUTPUT_FILE_NAME}", Body=file_data, ContentType='text/html')
+        s3_client.put_object(Bucket=GALLERY_BUCKET, Key=f"{TARGET_PREFIX}/{OUTPUT_FILE_NAME}", Body=file_data, ContentType='text/html')
     print(f"HTML file {OUTPUT_FILE_NAME} copied to S3 bucket {GALLERY_BUCKET} successfully.")
 
 
 def get_all_images():
     paginator = s3_client.get_paginator('list_objects_v2')
-    for page in paginator.paginate(Bucket=GALLERY_BUCKET, Prefix=f"{GALLERY_IMAGE_FOLDER_NAME}/"):
+    for page in paginator.paginate(Bucket=GALLERY_BUCKET, Prefix=f"{TARGET_PREFIX}/{GALLERY_IMAGE_FOLDER_NAME}/"):
         for obj in page.get('Contents', []):
             image_file_name = obj['Key']
             try:
@@ -85,7 +87,7 @@ def get_all_images():
 
 
 def invalidate_cloudfront_cache():
-    paths = ["/*"]
+    paths = [f"/{TARGET_PREFIX}/*"]
     caller_reference = f"invalidation-{int(time.time())}"
     print(f"Creating CloudFront invalidation for {paths}")
     response = cloudfront_client.create_invalidation(
